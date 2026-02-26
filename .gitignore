@@ -1,0 +1,9 @@
+# Sisyphus work directory
+/.sisyphus
+
+# Runtime data directories (mounted from host)
+/data
+
+# macOS extended attributes
+._*
+.DS_Store

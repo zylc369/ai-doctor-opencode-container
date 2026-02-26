@@ -8,7 +8,14 @@ services:
       - "4097:4096"
     volumes:
       - ./data/notes:/home/aiuser/Codes/ai-doctor-opencode/notes
-      - ./notes:/home/aiuser/Codes/ai-doctor/opencode/notes
+      - ./data/home/.cache/opencode:/home/aiuser/.cache/opencode
+      - ./data/home/.config/opencode:/home/aiuser/.config/opencode
+      - ./data/home/.local/share/opencode:/home/aiuser/.local/share/opencode
+      - ./data/home/.local/state/opencode:/home/aiuser/.local/state/opencode
     working_dir: /home/aiuser/Codes
     restart: on-failure:5
-    command: /home/aiuser/.opencode/bin/opencode web --port 4096 --hostname 0.0.0.0
+    command: >
+      bash -c "cd /home/aiuser/Codes/ai-doctor-opencode &&
+      git pull origin main &&
+      mkdir -p notes &&
+      /home/aiuser/.opencode/bin/opencode web --port 4096 --hostname 0.0.0.0"
