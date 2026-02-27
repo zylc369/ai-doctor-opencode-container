@@ -52,11 +52,11 @@ RUN mkdir -p /home/aiuser/Codes/ai-doctor-opencode/notes
 RUN cd /home/aiuser && \
     /home/aiuser/.bun/bin/bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no --opencode-zen=yes
 
-# Download opencode-linux-x64.tar.gz and extract to opencode_new
+# Download opencode-linux-arm64.tar.gz and extract to opencode_new
 RUN cd /tmp && \
-    curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-linux-x64.tar.gz -o opencode-linux-x64.tar.gz && \
+    curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-linux-arm64.tar.gz -o opencode-linux-arm64.tar.gz && \
     mkdir -p extracted && \
-    tar -xzf opencode-linux-x64.tar.gz -C extracted && \
+    tar -xzf opencode-linux-arm64.tar.gz -C extracted && \
     mkdir -p /home/aiuser/.opencode/bin && \
     find extracted -type f -executable -name 'opencode' -exec cp {} /home/aiuser/.opencode/bin/opencode_new \; && \
     chmod +x /home/aiuser/.opencode/bin/opencode_new && \
