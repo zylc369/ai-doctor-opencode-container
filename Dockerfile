@@ -10,12 +10,16 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     sudo \
     unzip \
+    python3 \
     && rm -rf /var/lib/apt/lists/*
+
+# Verify Python version (must be > 3.9.6)
+RUN python3 --version
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
 
-# Install OpenCode
+# Install OpenCode (will be replaced later)
 RUN curl -fsSL https://opencode.ai/install | bash
 
 # Create user 'aiuser' with password (for sudo access)
@@ -48,8 +52,22 @@ RUN mkdir -p /home/aiuser/Codes/ai-doctor-opencode/notes
 RUN cd /home/aiuser && \
     /home/aiuser/.bun/bin/bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no --opencode-zen=yes
 
-# Copy oh-my-opencode.json config
-COPY oh-my-opencode.json /home/aiuser/.config/opencode/oh-my-opencode.json
+# Download opencode-linux-x64.tar.gz and extract to opencode_new
+RUN cd /tmp && \
+    curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-linux-x64.tar.gz -o opencode-linux-x64.tar.gz && \
+    mkdir -p extracted && \
+    tar -xzf opencode-linux-x64.tar.gz -C extracted && \
+    mkdir -p /home/aiuser/.opencode/bin && \
+    find extracted -type f -executable -name 'opencode' -exec cp {} /home/aiuser/.opencode/bin/opencode_new \; && \
+    chmod +x /home/aiuser/.opencode/bin/opencode_new && \
+    rm -rf /tmp/opencode*
+
+# Download opencode-web.tar.gz and extract
+RUN cd /tmp && \
+    curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-web.tar.gz -o opencode-web.tar.gz && \
+    mkdir -p /home/aiuser/Codes/opencode-web && \
+    tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web && \
+    rm /tmp/opencode-web.tar.gz
 
 # Ensure proper ownership
 RUN chown -R aiuser:aiuser /home/aiuser
@@ -60,5 +78,5 @@ ENV PATH="/home/aiuser/.opencode/bin:/home/aiuser/.bun/bin:$PATH"
 # Switch to non-root user
 USER aiuser
 
-# Expose port
-EXPOSE 4096
+# Expose ports (4096 for opencode web, 4173 for http.server)
+EXPOSE 4096 4173

@@ -15,7 +15,10 @@ services:
     working_dir: /home/aiuser/Codes
     restart: on-failure:5
     command: >
-      bash -c "cd /home/aiuser/Codes/ai-doctor-opencode &&
+      bash -c "
+      cd /home/aiuser/Codes/ai-doctor-opencode &&
       git pull origin main &&
       mkdir -p notes &&
-      /home/aiuser/.opencode/bin/opencode web --port 4096 --hostname 0.0.0.0"
+      /home/aiuser/.opencode/bin/opencode web --hostname 0.0.0.0 --port 4096 --unmatched-request-proxy http://localhost:4173 &
+      python3 -m http.server 4173 -d /home/aiuser/Codes/opencode-web
+      "
