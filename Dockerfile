@@ -62,12 +62,12 @@ RUN cd /tmp && \
     chmod +x /home/aiuser/.opencode/bin/opencode_new && \
     rm -rf /tmp/opencode*
 
-# Download opencode-web.tar.gz and extract
+# Download opencode-web.tar.gz and extract to opencode-web directory
 RUN cd /tmp && \
     curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-web.tar.gz -o opencode-web.tar.gz && \
     mkdir -p /home/aiuser/Codes/opencode-web && \
     tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web && \
-    rm /tmp/opencode-web.tar.gz
+    rm -f /tmp/opencode-web.tar.gz
 
 # Ensure proper ownership
 RUN chown -R aiuser:aiuser /home/aiuser
