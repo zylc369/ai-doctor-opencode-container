@@ -66,7 +66,7 @@ RUN cd /tmp && \
 RUN cd /tmp && \
     curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15/opencode-web.tar.gz -o opencode-web.tar.gz && \
     mkdir -p /home/aiuser/Codes/opencode-web && \
-    tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web && \
+    tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web --strip-components=1 && \
     rm -f /tmp/opencode-web.tar.gz
 
 # Ensure proper ownership
