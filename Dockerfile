@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     sudo \
     unzip \
+    vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Node.js (NodeSource) for serve package
@@ -20,43 +21,43 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 # Install serve globally
 RUN npm install -g serve
 
-#XS|# Install Bun
+# Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
 
-#XX|# Install OpenCode (will be replaced later)
+# Install OpenCode (will be replaced later)
 RUN curl -fsSL https://opencode.ai/install | bash
 
-#ZQ|# Create user 'aiuser' with password (for sudo access)
+# Create user 'aiuser' with password (for sudo access)
 RUN useradd -m -s /bin/bash aiuser && \
     echo "aiuser:Lcnihao2010" | chpasswd && \
     echo "aiuser ALL=(ALL) ALL" >> /etc/sudoers
 
-#VN|# Copy opencode and bun to aiuser's home
+# Copy opencode and bun to aiuser's home
 RUN mkdir -p /home/aiuser/.opencode && \
     cp -r /root/.opencode/* /home/aiuser/.opencode/ && \
     mkdir -p /home/aiuser/.bun && \
     (cp -r /root/.bun/* /home/aiuser/.bun/ 2>/dev/null || true)
 
-#VX|# Copy opencode config
+# Copy opencode config
 RUN mkdir -p /home/aiuser/.config/opencode
 
-#PZ|# Switch to user directory
+# Switch to user directory
 WORKDIR /home/aiuser
 
-#JQ|# Create Codes directory
+# Create Codes directory
 RUN mkdir -p /home/aiuser/Codes
 
-#MV|# Clone ai-doctor-opencode repository to ~/Codes/ai-doctor-opencode
+# Clone ai-doctor-opencode repository to ~/Codes/ai-doctor-opencode
 RUN git clone https://github.com/zylc369/ai-doctor-opencode.git /home/aiuser/Codes/ai-doctor-opencode
 
-#SH|# Create notes directory
+# Create notes directory
 RUN mkdir -p /home/aiuser/Codes/ai-doctor-opencode/notes
 
-#NK|# Install oh-my-opencode (with OpenCode Zen for free models)
+# Install oh-my-opencode (with OpenCode Zen for free models)
 RUN cd /home/aiuser && \
     /home/aiuser/.bun/bin/bunx oh-my-opencode install --no-tui --claude=no --openai=no --gemini=no --copilot=no --opencode-zen=yes
 
-#YK|# Download opencode-linux-arm64.tar.gz and extract to opencode_new
+# Download opencode-linux-arm64.tar.gz and extract to opencode_new
 RUN cd /tmp && \
     curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15.2/opencode-linux-arm64.tar.gz -o opencode-linux-arm64.tar.gz && \
     mkdir -p extracted && \
@@ -66,21 +67,21 @@ RUN cd /tmp && \
     chmod +x /home/aiuser/.opencode/bin/opencode_new && \
     rm -rf /tmp/opencode*
 
-#ZQ|# Download opencode-web.tar.gz and extract to opencode-web directory
+# Download opencode-web.tar.gz and extract to opencode-web directory
 RUN cd /tmp && \
     curl -fsSL https://github.com/zylc369/opencode/releases/download/v1.2.15.2/opencode-web.tar.gz -o opencode-web.tar.gz && \
     mkdir -p /home/aiuser/Codes/opencode-web && \
     tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web --strip-components=1 && \
     rm -f /tmp/opencode-web.tar.gz
 
-#NQ|# Ensure proper ownership
+# Ensure proper ownership
 RUN chown -R aiuser:aiuser /home/aiuser
 
-#NX|# Set PATH environment variable for runtime
+# Set PATH environment variable for runtime
 ENV PATH="/home/aiuser/.opencode/bin:/home/aiuser/.bun/bin:$PATH"
 
-#VJ|# Switch to non-root user
+# Switch to non-root user
 USER aiuser
 
-#JP|# Expose ports (4096 for opencode web, 4173 for serve)
+# Expose ports (4096 for opencode web, 4173 for serve)
 EXPOSE 4096 4173
