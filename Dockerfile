@@ -74,6 +74,8 @@ RUN cd /tmp && \
     tar -xzf opencode-web.tar.gz -C /home/aiuser/Codes/opencode-web --strip-components=1 && \
     rm -f /tmp/opencode-web.tar.gz
 
+# Configure ll command as global executable
+RUN printf '#!/bin/sh\nexec ls -ahl "$@"' > /usr/local/bin/ll && chmod +x /usr/local/bin/ll
 # Ensure proper ownership
 RUN chown -R aiuser:aiuser /home/aiuser
 
